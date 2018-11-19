@@ -1,0 +1,316 @@
+﻿using UnityEngine;
+using System.Collections;
+
+public class ResourceManager
+{
+    /// <summary>
+    /// 是否使用 asset bundle.
+    /// </summary>
+    public static bool UseAssetBundle = true;
+
+#if UNITY_EDITOR
+    /// <summary>
+    /// Editor模式时，资源所在文件夹路径
+    /// </summary>
+    private static string m_strResourcePath = "";
+    public static string itfResourcePath
+    {
+        set
+        {
+            if (value != null
+                && value.Length > 0)
+            {
+                if (value.EndsWith("/"))
+                    m_strResourcePath = value;
+                else
+                    m_strResourcePath = value + "/";
+            }
+            else
+                m_strResourcePath = "";
+        }
+        get
+        {
+            return m_strResourcePath;
+        }
+    }
+#endif
+
+    /// <summary>
+    /// 初始化
+    /// </summary>
+    public static void Initilization()
+    {
+#if UNITY_EDITOR
+        // 设置资源所在目录,当不使用AB时使用这个目录里的资源
+        itfResourcePath = "Assets/Resources1/";
+#endif
+
+        // 是否使用AB作为资源
+        UseAssetBundle = true;
+
+        if (UseAssetBundle)
+        {
+            // 初始化AssetBundleManager
+            DigiSky.AssetBundleKit.AssetBundleManager.Initialization();
+            DigiSky.AssetBundleKit.AssetBundleManager.GetSingel().itfDownloadPath = Application.persistentDataPath;     // 设置下载的AB包所在目录
+            DigiSky.AssetBundleKit.AssetBundleManager.GetSingel().itfStreamingPath = Application.streamingAssetsPath + "/AssetBundles";     // 设置安装包内AB包所在目录
+            DigiSky.AssetBundleKit.AssetBundleManager.GetSingel().InitManifest();   // 初始化manifest文件
+        }
+    }
+
+    /// <summary>
+    /// 加载资源，如TextAsset等资源，加载后会立即释放AB包
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="strPath">AB包所在路径</param>
+    /// <param name="strAssetName">AB包名称</param>
+    /// <param name="strSpecialAssetName">一般及时其内部asset的名称，但某些特殊的不一样，目前只有Manifest文件和lua文件有特殊名字</param>
+    /// <returns></returns>
+    public T LoadSingleAsset<T>(string strPath, string strAssetName, string strSpecialAssetName = null) where T : UnityEngine.Object
+    {
+        if (strPath == null)
+        {
+            Debug.LogError("加载asset失败，参数strPath不能为空");
+            return null;
+        }
+
+        if (strAssetName == null
+            || strAssetName.Length == 0)
+        {
+            Debug.LogError("加载asset失败，参数strAssetName不能为空，且不能为空字符");
+            return null;
+        }
+
+        if (UseAssetBundle)
+        {
+            if (DigiSky.AssetBundleKit.AssetBundleManager.IsExits())
+            {
+                return DigiSky.AssetBundleKit.AssetBundleManager.GetSingel().LoadSingleAsset<T>(strPath, strAssetName, strSpecialAssetName);
+            }
+        }
+        else
+        {
+#if UNITY_EDITOR
+            if (itfResourcePath == null)
+                return null;
+
+            //查找扩展名
+            string strExt = "";
+            string[] files = System.IO.Directory.GetFiles(itfResourcePath + strPath, "*", System.IO.SearchOption.TopDirectoryOnly);
+            for (int i = 0; i < files.Length; i++)
+            {
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(files[i]);
+                string fileExt = System.IO.Path.GetExtension(files[i]);
+                if (fileName != null
+                    && fileName == strAssetName
+                    && fileExt != null)
+                {
+                    strExt = fileExt;
+                    break;
+                }
+            }
+
+            //拼接路径
+            string strKey = itfResourcePath + strPath + strAssetName + strExt;
+            return UnityEditor.AssetDatabase.LoadAssetAtPath(strKey, typeof(T)) as T;
+#else
+            return Resources.Load(strPath + strAssetName) as T;
+#endif
+        }
+
+        return null;
+    }
+
+    /// <summary>
+    /// 加载一个资源
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <param name="strPath"></param>
+    /// <param name="strAssetName"></param>
+    /// <returns></returns>
+    public static T LoadAsset<T>(string strPath, string strAssetName) where T : Object
+    {
+        if (strPath == null)
+        {
+            Debug.LogError("加载asset失败，参数strPath不能为空");
+            return null;
+        }
+
+        if (strAssetName == null
+            || strAssetName.Length == 0)
+        {
+            Debug.LogError("加载asset失败，参数strAssetName不能为空，且不能为空字符");
+            return null;
+        }
+
+        UnityEngine.Object objCache = null;
+
+        if (UseAssetBundle)
+        {
+            if (DigiSky.AssetBundleKit.AssetBundleManager.IsExits())
+            {
+                objCache = DigiSky.AssetBundleKit.AssetBundleManager.GetSingel().LoadAsset<T>(strPath, strAssetName);
+            }
+        }
+        else
+        {
+#if UNITY_EDITOR
+            if (itfResourcePath == null)
+                return null;
+
+            //查找扩展名
+            string strExt = "";
+            string[] files = System.IO.Directory.GetFiles(itfResourcePath + strPath, "*", System.IO.SearchOption.TopDirectoryOnly);
+            for (int i = 0; i < files.Length; i++)
+            {
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(files[i]);
+                string fileExt = System.IO.Path.GetExtension(files[i]);
+                if (fileName != null
+                    && fileName == strAssetName
+                    && fileExt != null)
+                {
+                    strExt = fileExt;
+                    break;
+                }
+            }
+
+            //拼接路径
+            string strKey = itfResourcePath + strPath + strAssetName + strExt;
+            objCache = UnityEditor.AssetDatabase.LoadAssetAtPath(strKey, typeof(T));
+#else
+            objCache = Resources.Load(strPath + strAssetName);
+#endif
+        }
+
+        // 判断加载是否成功
+        if (objCache == null)
+            Debug.LogError("Load Prefab Failed, Path = " + strPath + " Name = " + strAssetName);
+
+        return objCache as T;
+    }
+
+    public static void LoadAssetAsyc(string strPath, string strAssetName, System.Action<Object> finishLoadAssetCallback)
+    {
+        if (strPath == null)
+        {
+            Debug.LogError("加载asset失败，参数strPath不能为空");
+            return;
+        }
+
+        if (strAssetName == null
+            || strAssetName.Length == 0)
+        {
+            Debug.LogError("加载asset失败，参数strAssetName不能为空，且不能为空字符");
+            return;
+        }
+
+        if (finishLoadAssetCallback == null)
+        {
+            Debug.LogError("加载asset失败，参数finishLoadAssetCallback不能为空");
+            return;
+        }
+
+        UnityEngine.Object objCache = null;
+
+        if (UseAssetBundle)
+        {
+            if (DigiSky.AssetBundleKit.AssetBundleManager.IsExits())
+            {
+                DigiSky.AssetBundleKit.AssetBundleManager.GetSingel().LoadAssetAsyc(strPath, strAssetName, finishLoadAssetCallback);
+            }
+        }
+        else
+        {
+#if UNITY_EDITOR
+            if (itfResourcePath == null)
+                return;
+
+            //查找扩展名
+            string strExt = "";
+            string[] files = System.IO.Directory.GetFiles(itfResourcePath + strPath, "*", System.IO.SearchOption.TopDirectoryOnly);
+            for (int i = 0; i < files.Length; i++)
+            {
+                string fileName = System.IO.Path.GetFileNameWithoutExtension(files[i]);
+                string fileExt = System.IO.Path.GetExtension(files[i]);
+                if (fileName != null
+                    && fileName == strAssetName
+                    && fileExt != null)
+                {
+                    strExt = fileExt;
+                    break;
+                }
+            }
+
+            //拼接路径
+            string strKey = itfResourcePath + strPath + strAssetName + strExt;
+            objCache = UnityEditor.AssetDatabase.LoadAssetAtPath(strKey, typeof(UnityEngine.Object));
+#else
+            objCache = Resources.Load(strPath + strAssetName);
+#endif
+        }
+
+        // 判断加载是否成功
+        if (objCache == null)
+            Debug.LogError("Load Prefab Failed, Path = " + strPath + " Name = " + strAssetName);
+
+        if (finishLoadAssetCallback != null)
+            finishLoadAssetCallback(objCache);
+    }
+
+    /// <summary>
+    /// 加载shader
+    /// </summary>
+    /// <param name="strShaderName"></param>
+    /// <returns></returns>
+    public static Shader LoadShader(string strShaderName)
+    {
+        if (UseAssetBundle)
+        {
+            if (DigiSky.AssetBundleKit.AssetBundleManager.IsExits())
+                return DigiSky.AssetBundleKit.AssetBundleManager.GetSingel().LoadShader(strShaderName);
+            else
+                Debug.LogError("加载失败，AssetBundleManager不存在");
+        } 
+        else
+            return Shader.Find(strShaderName);
+
+        return null;
+    }
+
+    /// <summary>
+    /// 加载场景
+    /// </summary>
+    /// <param name="strSceneName"></param>
+    public void LoadScene(string strSceneName)
+    {
+        if (UseAssetBundle)
+        {
+            if (DigiSky.AssetBundleKit.AssetBundleManager.IsExits())
+                DigiSky.AssetBundleKit.AssetBundleManager.GetSingel().LoadScene(strSceneName);
+            else
+                Debug.LogError("加载失败，AssetBundleManager不存在");
+        }
+        else
+            UnityEngine.SceneManagement.SceneManager.LoadScene(strSceneName);
+    }
+
+    /// <summary>
+    /// 异步加载场景,注意，场景AB包的释放需要放在SceneManager.sceneLoaded加载完成回调中或者异步加载时isDone显示为true后
+    /// </summary>
+    /// <param name="strSceneName"></param>
+    /// <returns></returns>
+    public AsyncOperation LoadSceneAsync(string strSceneName)
+    {
+        if (UseAssetBundle)
+        {
+            if (DigiSky.AssetBundleKit.AssetBundleManager.IsExits())
+                return DigiSky.AssetBundleKit.AssetBundleManager.GetSingel().LoadSceneAsync(strSceneName);
+            else
+                Debug.LogError("加载失败，AssetBundleManager不存在");
+        }
+        else
+            return UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(strSceneName);
+
+        return null;
+    }
+}

@@ -1,0 +1,14 @@
+Plugins/
+StreamingAssets/
+*.meta
+*.zip
+*.xml
+*.dll
+*.bat
+LuaFramework/NGUI/
+LuaFramework/Examples/
+LuaFramework/Luajit/
+LuaFramework/Resources/
+
+
+
