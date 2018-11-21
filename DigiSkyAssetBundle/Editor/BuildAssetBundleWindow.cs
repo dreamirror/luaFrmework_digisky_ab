@@ -28,7 +28,8 @@ namespace DigiSky.AssetBundleKit
         /// <summary>
         /// scence文件目录
         /// </summary>
-        private string m_strScenceFileDir = "/Scence/";
+        private string m_strScenceFileDir = "/LuaFramework/Scenes/";
+        private string m_strScenceFileDir2 = "/LuaFramework/Scenes/";
 
         BuildAssetBundleWindow()
         {
@@ -66,8 +67,8 @@ namespace DigiSky.AssetBundleKit
             m_strResToBundlePath = EditorGUILayout.TextField("", m_strResToBundlePath);
 
             GUILayout.Space(10);
-            GUILayout.Label("场景文件所在路径，必填（Assets文件夹下）", GUILayout.MaxWidth(800));
-            m_strScenceFileDir = EditorGUILayout.TextField("", m_strScenceFileDir);
+            GUILayout.Label("场景文件ss所在路径，必填（Assets文件夹下）", GUILayout.MaxWidth(800));
+            m_strScenceFileDir = EditorGUILayout.TextField("", m_strScenceFileDir2);
 
             GUILayout.Space(10);
             GUILayout.Label("配置档文件所在路径，可选，单独给配置档打包使用（Assets文件夹下）", GUILayout.MaxWidth(800));
@@ -118,7 +119,7 @@ namespace DigiSky.AssetBundleKit
             if (DigiSky.AssetBundleKit.BuildAssetBundle.resToBundleDir.EndsWith("/") == false)
                 DigiSky.AssetBundleKit.BuildAssetBundle.resToBundleDir = DigiSky.AssetBundleKit.BuildAssetBundle.resToBundleDir + "/";
 
-            DigiSky.AssetBundleKit.BuildAssetBundle.ScenceFileDir = m_strScenceFileDir;
+            DigiSky.AssetBundleKit.BuildAssetBundle.ScenceFileDir = m_strScenceFileDir2;
             if (DigiSky.AssetBundleKit.BuildAssetBundle.ScenceFileDir.StartsWith("/") == false)
                 DigiSky.AssetBundleKit.BuildAssetBundle.ScenceFileDir = "/" + DigiSky.AssetBundleKit.BuildAssetBundle.ScenceFileDir;
             if (DigiSky.AssetBundleKit.BuildAssetBundle.ScenceFileDir.EndsWith("/") == false)
@@ -162,7 +163,7 @@ namespace DigiSky.AssetBundleKit
                 return false;
             }
             if (m_strScenceFileDir == null
-                || Directory.Exists(Application.dataPath + m_strScenceFileDir) == false)
+                || Directory.Exists(Application.dataPath + m_strScenceFileDir2) == false)
             {
                 EditorUtility.DisplayDialog("打包出错", "场景文件所在路径不存在", "确定");
                 return false;
@@ -294,9 +295,9 @@ namespace DigiSky.AssetBundleKit
                         {
                             m_strResToBundlePath = items[1];
                         }
-                        else if (items[0].Equals("m_strScenceFileDir"))
+                        else if (items[0].Equals("m_strScenceFileDir2"))
                         {
-                            m_strScenceFileDir = items[1];
+                            m_strScenceFileDir2 = items[1];
                         }
                         else
                         {
@@ -324,7 +325,7 @@ namespace DigiSky.AssetBundleKit
                 if (m_strResToBundlePath != null)
                     sb.AppendFormat("{0}\t{1}\n", "m_strResToBundlePath", m_strResToBundlePath);
                 if (m_strScenceFileDir != null)
-                    sb.AppendFormat("{0}\t{1}\n", "m_strScenceFileDir", m_strScenceFileDir);
+                    sb.AppendFormat("{0}\t{1}\n", "m_strScenceFileDir2", m_strScenceFileDir2);
 
                 sw.Write(sb.ToString());
                 sw.Flush();

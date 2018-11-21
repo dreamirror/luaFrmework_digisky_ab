@@ -173,7 +173,7 @@ namespace DigiSky.AssetBundleKit
         /// <summary>
         /// 异步加载资源
         /// </summary>
-        /// <param name="strPath"></param>
+        /// <param name="strPath"></param> ab的完整路径
         /// <param name="strAssetName"></param>
         /// <param name="finishLoadAssetCallback"></param>
         public void LoadAssetAsyc(string strPath, string strAssetName, System.Action<Object> finishLoadAssetCallback)
@@ -183,7 +183,7 @@ namespace DigiSky.AssetBundleKit
                 && strAssetName.Length != 0)
             {
                 // 转为小写，包名只能是小写
-                string strABName = strPath.ToLower() + strAssetName.ToLower();
+                string strABName = strPath.ToLower();
 
                 //if (m_gameobject == null)
                 //{
@@ -197,6 +197,8 @@ namespace DigiSky.AssetBundleKit
                 m_listCoroutine.Add(routine);
             }
         }
+
+
 
         /// <summary>
         /// 异步加载资源，从cache中

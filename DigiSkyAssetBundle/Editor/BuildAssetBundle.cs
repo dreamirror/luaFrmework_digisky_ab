@@ -27,7 +27,7 @@ namespace DigiSky.AssetBundleKit
         /// <summary>
         /// scence文件目录
         /// </summary>
-        public static string ScenceFileDir = "/Scence/";
+        public static string ScenceFileDir = "/LuaFramework/Scenes/";
 
         /// <summary>
         /// 版本信息文件名称
@@ -78,11 +78,11 @@ namespace DigiSky.AssetBundleKit
             //设置所有资源包名
             Debug.Log("111111111111111");
             Debug.Log(Application.dataPath + resToBundleDir);
-            _SetBundleNameAndVariantByDir(Application.dataPath );
+            _SetBundleNameAndVariantByDir(Application.dataPath + ScenceFileDir);
             foreach (KeyValuePair<string, string> kvp in abInfo) {
                 Debug.Log(kvp.Key);
                 Debug.Log(kvp.Value);
-                //_SetConfigBundleNameAndVariantByDir(kvp.Key,kvp.Value);
+                _SetConfigBundleNameAndVariantByDir(kvp.Key,kvp.Value);
             }
 
             // 单独设置scence文件包名
@@ -150,7 +150,7 @@ namespace DigiSky.AssetBundleKit
         public static void ClearAllAssetBundleNameAndVariant()
         {
             Debug.Log("44444444444444444444");
-            _SetBundleNameAndVariantByDir(Application.dataPath, true);
+            _SetBundleNameAndVariantByDir(Application.dataPath + resToBundleDir, true);
 
             AssetDatabase.Refresh();
 
@@ -560,6 +560,7 @@ namespace DigiSky.AssetBundleKit
         private static void _GenerateBundleInfoFile(string rootFolder, bool bEmpty = false)
         {
             StringBuilder sb = new StringBuilder();
+            AssetDatabase.RemoveUnusedAssetBundleNames();
             if (bEmpty == false)
             {
                 string[] names = AssetDatabase.GetAllAssetBundleNames();

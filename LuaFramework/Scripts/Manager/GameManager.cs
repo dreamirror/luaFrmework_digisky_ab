@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using LuaInterface;
 using System.Reflection;
 using System.IO;
-
+using DigiSky.AssetBundleKit;
 namespace LuaFramework {
     public class GameManager : Manager {
         protected static bool initialize = false;
@@ -27,7 +27,31 @@ namespace LuaFramework {
             }
             DontDestroyOnLoad(gameObject);  //防止销毁自己
 
-            CheckExtractResource(); //释放资源
+            // CheckExtractResource(); //释放资源
+
+            ///////////////////初始化abmanager 和 下载器//////////////////////////////////////////////////
+  
+            //System.Action<UnityEngine.Object> calls = Call_back;
+            AssetBundleManager.Initialization();
+            AssetBundleManager mgr = AssetBundleManager.GetSingel();
+           // mgr.itfStreamingPath = Application.streamingAssetsPath + "/AssetBundles/";
+           // mgr.itfDownloadPath = Application.persistentDataPath + "/";
+            mgr.InitManifest();
+            /*  
+            mgr.LoadAssetAsyc("Assets/StreamingAssets/assetbundles/", "bundleinfo", calls);*/
+            mgr.LoadAssetAsyc("Assets/StreamingAssets/assetbundles/pic", "1", LoadCallBack);
+
+
+            //AB下载测试
+            AssetBundleInfoManager.Initialization();
+            AssetBundleInfoManager info = AssetBundleInfoManager.GetSingel();
+            AssetBundleDownloader.Initialization();
+            AssetBundleDownloader downloader = AssetBundleDownloader.GetSingel();
+            downloader.SetSourceAssetBundleURL("http://192.168.101.57/F%3A/filesserver/assetbundles");
+            System.Action<bool> call = UpdateCallBack;
+            downloader.CheckUpdate(call);
+            /////////////////////////////////////////////////////////////////////////////////////////////////
+
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             Application.targetFrameRate = AppConst.GameFrameRate;
         }
@@ -302,5 +326,31 @@ namespace LuaFramework {
             }
             Debug.Log("~GameManager was destroyed");
         }
+
+
+        /// <summary>
+        /// 热更完成的回调
+        /// </summary>
+        public void UpdateCallBack(bool success)
+        {
+            Debug.Log("update call back!!");
+
+        }
+
+
+        public void LoadCallBack(UnityEngine.Object obj)
+        {
+            Debug.Log("call back");
+            //Object pic = obj.LoadAsset("1.jpg");
+            var texture = obj as Texture2D;
+            Sprite sp = Sprite.Create(texture, new Rect(0, 0, 2048, 1024), Vector2.zero);
+            if (sp != null)
+            {
+                Debug.Log("******************");
+            }
+            //image.sprite = sp;
+        }
+
+
     }
 }
