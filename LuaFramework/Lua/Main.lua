@@ -7,7 +7,7 @@ function Main()
    -- test:Say("sss","laod_call");
     
    --local ab_mgr = DigiSky.AssetBundleKit.AbMgr();
-   DigiSky.AssetBundleKit.AbMgr.LoadAssetBundle("sss","load_call");		 		
+   DigiSky.AssetBundleKit.AbMgr.LoadAssetBundle("Assets/StreamingAssets/assetbundles/pic","1","load_call");		 		
 end
 
 --场景切换通知
