@@ -6,16 +6,26 @@ using UnityEngine;
 using LuaFramework;
 namespace DigiSky.AssetBundleKit
 {
-    class AbMgr:Manager
+    public class AbMgr
     {
+        public string b = "";
+
         /// <summary>
         /// 加载ab
         /// </summary>
         /// <param path="assetbudlePath">ab的路径</param>
-        public void LoadAssetBundle(string path,string luaCall, params object[] args) {
+        public static void LoadAssetBundle(string path,string luaCall, params object[] args) {
+            Debug.Log("AbMgr LoadAssetBundle !!!!!");
             AssetBundleManager.GetSingel().LoadAssetAsyc("Assets/StreamingAssets/assetbundles/pic", "1", (UnityEngine.Object obj) => {
-                LuaManager.CallFunction(luaCall, args);
+                //LuaManager.CallFunction(luaCall, args);
+                Debug.Log("AbMgr load call back !!!!!");
+                Util.CallMethod("Network", luaCall, args);
+                
             });
+        }
+
+        public AbMgr GrtInstance() {
+            return new AbMgr();
         }
 
         /// <summary>

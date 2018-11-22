@@ -44,9 +44,11 @@ public class TestWrap
 	{
 		try
 		{
-			ToLua.CheckArgsCount(L, 1);
+			ToLua.CheckArgsCount(L, 3);
 			Test obj = (Test)ToLua.CheckObject<Test>(L, 1);
-			obj.Say();
+			string arg0 = ToLua.CheckString(L, 2);
+			string arg1 = ToLua.CheckString(L, 3);
+			obj.Say(arg0, arg1);
 			return 0;
 		}
 		catch (Exception e)

@@ -146,3 +146,12 @@ function Network.Unload()
     Event.RemoveListener(Protocal.Disconnect);
     logWarn('Unload Network...');
 end
+
+--卸载网络监听--
+function Network.load_call()
+
+    logWarn('1111111111111111111');
+    logWarn('2222222222222222');
+    logWarn('1111111111111111111');
+    logWarn('1111111111111111111');
+end

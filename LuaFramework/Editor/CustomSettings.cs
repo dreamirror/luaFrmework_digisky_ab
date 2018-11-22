@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using LuaInterface;
 using LuaFramework;
 using UnityEditor;
-
+using DigiSky.AssetBundleKit;
 using BindType = ToLuaMenu.BindType;
 using System.Reflection;
 
@@ -176,8 +176,7 @@ public static class CustomSettings
 
         //添加的额外逻辑
         _GT(typeof(Test)),
-        
-
+        _GT(typeof(AbMgr)),
     };
 
     public static List<Type> dynamicList = new List<Type>()

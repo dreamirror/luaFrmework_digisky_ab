@@ -28,30 +28,41 @@ namespace LuaFramework {
             DontDestroyOnLoad(gameObject);  //防止销毁自己
 
             // CheckExtractResource(); //释放资源
-
+           
             ///////////////////初始化abmanager 和 下载器//////////////////////////////////////////////////
-  
+
             //System.Action<UnityEngine.Object> calls = Call_back;
             AssetBundleManager.Initialization();
             AssetBundleManager mgr = AssetBundleManager.GetSingel();
            // mgr.itfStreamingPath = Application.streamingAssetsPath + "/AssetBundles/";
-           // mgr.itfDownloadPath = Application.persistentDataPath + "/";
+            mgr.itfDownloadPath = Application.persistentDataPath + "/";
             mgr.InitManifest();
             /*  
             mgr.LoadAssetAsyc("Assets/StreamingAssets/assetbundles/", "bundleinfo", calls);*/
-            mgr.LoadAssetAsyc("Assets/StreamingAssets/assetbundles/pic", "1", LoadCallBack);
+            // mgr.LoadAssetAsyc("Assets/StreamingAssets/assetbundles/pic", "1", (UnityEngine.Object obj)=> {
+            // Debug.Log("AbMgr load call back !!!!!");
+            // Util.CallMethod("", "laod_call");
+            // });
 
 
             //AB下载测试
-            AssetBundleInfoManager.Initialization();
-            AssetBundleInfoManager info = AssetBundleInfoManager.GetSingel();
-            AssetBundleDownloader.Initialization();
-            AssetBundleDownloader downloader = AssetBundleDownloader.GetSingel();
-            downloader.SetSourceAssetBundleURL("http://192.168.101.57/F%3A/filesserver/assetbundles");
-            System.Action<bool> call = UpdateCallBack;
-            downloader.CheckUpdate(call);
+           // AssetBundleInfoManager.Initialization();
+           // AssetBundleInfoManager info = AssetBundleInfoManager.GetSingel();
+           // AssetBundleDownloader.Initialization();
+           // AssetBundleDownloader downloader = AssetBundleDownloader.GetSingel();
+            // downloader.SetSourceAssetBundleURL("http://192.168.101.57/F%3A/filesserver/assetbundles");
+            // System.Action<bool> call = UpdateCallBack;
+            // downloader.CheckUpdate(call);
             /////////////////////////////////////////////////////////////////////////////////////////////////
+           // Debug.Log("call abmgr load LoadAssetBundle13");
+           // mgr.LoadAssetAsyc("Assets/StreamingAssets/assetbundles/pic", "1", (UnityEngine.Object obj) => {
+                //LuaManager.CallFunction(luaCall, args);
+              //  Debug.Log("AbMgr load call back !!!!!");
+               // Util.CallMethod("", "laod_call");
 
+           // });
+            //AbMgr.LoadAssetBundle("", "laod_call");
+            OnResourceInited();
             Screen.sleepTimeout = SleepTimeout.NeverSleep;
             Application.targetFrameRate = AppConst.GameFrameRate;
         }

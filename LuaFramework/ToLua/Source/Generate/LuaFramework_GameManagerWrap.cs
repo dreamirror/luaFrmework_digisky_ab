@@ -10,6 +10,8 @@ public class LuaFramework_GameManagerWrap
 		L.RegFunction("InitGui", InitGui);
 		L.RegFunction("CheckExtractResource", CheckExtractResource);
 		L.RegFunction("OnResourceInited", OnResourceInited);
+		L.RegFunction("UpdateCallBack", UpdateCallBack);
+		L.RegFunction("LoadCallBack", LoadCallBack);
 		L.RegFunction("__eq", op_Equality);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.EndClass();
@@ -55,6 +57,40 @@ public class LuaFramework_GameManagerWrap
 			ToLua.CheckArgsCount(L, 1);
 			LuaFramework.GameManager obj = (LuaFramework.GameManager)ToLua.CheckObject<LuaFramework.GameManager>(L, 1);
 			obj.OnResourceInited();
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int UpdateCallBack(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			LuaFramework.GameManager obj = (LuaFramework.GameManager)ToLua.CheckObject<LuaFramework.GameManager>(L, 1);
+			bool arg0 = LuaDLL.luaL_checkboolean(L, 2);
+			obj.UpdateCallBack(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int LoadCallBack(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			LuaFramework.GameManager obj = (LuaFramework.GameManager)ToLua.CheckObject<LuaFramework.GameManager>(L, 1);
+			UnityEngine.Object arg0 = (UnityEngine.Object)ToLua.CheckObject<UnityEngine.Object>(L, 2);
+			obj.LoadCallBack(arg0);
 			return 0;
 		}
 		catch (Exception e)

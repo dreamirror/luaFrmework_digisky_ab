@@ -1,9 +1,13 @@
 --主入口函数。从这里开始lua逻辑
+
 function Main()					
-	print("logic start111")
+	print("lua main!!!")
     --local Test = luanet.import_type("Test")
-    local test = Test("sss");
-    test:Say();	 		
+    --local test = Test("sss");
+   -- test:Say("sss","laod_call");
+    
+   --local ab_mgr = DigiSky.AssetBundleKit.AbMgr();
+   DigiSky.AssetBundleKit.AbMgr.LoadAssetBundle("sss","load_call");		 		
 end
 
 --场景切换通知
@@ -14,4 +18,6 @@ function OnLevelWasLoaded(level)
 end
 
 function OnApplicationQuit()
+
 end
+
