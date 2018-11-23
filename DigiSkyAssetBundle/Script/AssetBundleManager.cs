@@ -180,17 +180,10 @@ namespace DigiSky.AssetBundleKit
         {
             if (strPath != null
                 && strAssetName != null
-                && strAssetName.Length != 0)
+                && strPath.Length != 0)
             {
                 // 转为小写，包名只能是小写
                 string strABName = strPath.ToLower();
-
-                //if (m_gameobject == null)
-                //{
-                //    Debug.LogError("GameMainObj not exist!");
-                //    return;
-                //}
-
                 // 异步加载资源
                 Debug.Log("Begin LoadAssetAsyc");
                 Coroutine routine = StartCoroutine(_LoadAssetAsyc(strABName, strAssetName, finishLoadAssetCallback));
@@ -198,6 +191,25 @@ namespace DigiSky.AssetBundleKit
             }
         }
 
+
+        /// <summary>
+        /// 异步加载资源加载最小粒度
+        /// </summary>
+        /// <param name="strPath"></param> ab的完整路径
+        /// <param name="finishLoadAssetCallback"></param>
+        public void LoadAssetAsyc(string strPath, System.Action<Object> finishLoadAssetCallback)
+        {
+            if (strPath != null
+                && strPath.Length != 0)
+            {
+                // 转为小写，包名只能是小写
+                string strABName = strPath.ToLower();
+                // 异步加载资源
+                Debug.Log("Begin LoadAssetAsyc");
+                Coroutine routine = StartCoroutine(_LoadAssetAsyc(strABName, "", finishLoadAssetCallback));
+                m_listCoroutine.Add(routine);
+            }
+        }
 
 
         /// <summary>
@@ -209,11 +221,6 @@ namespace DigiSky.AssetBundleKit
         /// <returns></returns>
         private IEnumerator _LoadAssetAsyc(string strABName, string strAssetName, System.Action<Object> finishLoadAssetCallback)
         {
-            //if (m_gameobject == null)
-            //{
-            //    Debug.LogError("GameMainObj not exist!");
-            //    yield break;
-            //}
 
             // 先加载自己包
             Debug.Log("Begin _LoadAssetAsyc");
@@ -221,18 +228,16 @@ namespace DigiSky.AssetBundleKit
             m_listCoroutine.Add(routine1);
             yield return routine1;
 
-            //if (m_gameobject == null)
-            //{
-            //    Debug.LogError("GameMainObj not exist!");
-            //    yield break;
-            //}
-
             // 再加载依赖包
             Coroutine routine2 = StartCoroutine(_LoadDependenciesAsyc(strABName));
             m_listCoroutine.Add(routine2);
             yield return routine2;
 
             // 最后从包中加载出资源
+            if (strAssetName.Length == 0) {
+                string[] temp = strABName.Split('/');
+                strAssetName = temp[temp.Length - 1];
+            }
             Object ob = _LoadAssetInternal(strABName, strAssetName);
 
             // 并把之前加载的assetbundle都卸载掉
@@ -271,12 +276,6 @@ namespace DigiSky.AssetBundleKit
             // 异步加载依赖包
             for (int i = 0; i < dependencies.Length; i++)
             {
-                //if (m_gameobject == null)
-                //{
-                //    Debug.LogError("GameMainObj not exist!");
-                //    yield break;
-                //}
-
                 Coroutine routine = StartCoroutine(_LoadAssetBundleAsyc(dependencies[i]));
                 m_listCoroutine.Add(routine);
                 yield return routine;

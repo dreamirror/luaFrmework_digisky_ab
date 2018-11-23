@@ -8,8 +8,7 @@ namespace DigiSky.AssetBundleKit
 {
     public class AbMgr
     {
-        public string b = "";
-
+        string b = "";
         /// <summary>
         /// 加载ab
         /// </summary>
@@ -46,10 +45,7 @@ namespace DigiSky.AssetBundleKit
                 return;
             }
 
-            AssetBundleManager.GetSingel().LoadAssetAsyc(bundlePath, assetName, (UnityEngine.Object obj) => {
-                Debug.Log("AbMgr load call back !!!!!");
-                Util.CallMethod("Network", luaCall, obj, args);
-            });
+
         }
         /// <summary>
         /// 加载asset
