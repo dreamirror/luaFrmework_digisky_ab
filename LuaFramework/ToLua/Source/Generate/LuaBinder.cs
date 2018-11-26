@@ -99,6 +99,7 @@ public static class LuaBinder
 		L.BeginModule("DigiSky");
 		L.BeginModule("AssetBundleKit");
 		DigiSky_AssetBundleKit_AbMgrWrap.Register(L);
+		DigiSky_AssetBundleKit_ImgeMgrWrap.Register(L);
 		L.EndModule();
 		L.EndModule();
 		L.BeginModule("System");

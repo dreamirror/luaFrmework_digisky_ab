@@ -40,7 +40,7 @@ namespace DigiSky.AssetBundleKit
         ///</summary>>
         public static Dictionary<string, string> abInfo = new Dictionary<string, string> {
             { Application.dataPath + "/ResourcesCopy/"+"logic","logic"},
-            { Application.dataPath + "/ResourcesCopy/"+"pic","pic"},
+            { Application.dataPath + "/ResourcesCopy/"+"pic",""},
             { Application.dataPath + "/ResourcesCopy/"+"bundleInfo",""},
 
         };

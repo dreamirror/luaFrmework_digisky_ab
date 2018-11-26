@@ -177,6 +177,7 @@ public static class CustomSettings
         //添加的额外逻辑
         _GT(typeof(Test)),
         _GT(typeof(AbMgr)),
+        _GT(typeof(ImgeMgr)),
     };
 
     public static List<Type> dynamicList = new List<Type>()

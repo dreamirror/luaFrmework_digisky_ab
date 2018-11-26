@@ -7,7 +7,12 @@ function Main()
    -- test:Say("sss","laod_call");
     
    --local ab_mgr = DigiSky.AssetBundleKit.AbMgr();
-   DigiSky.AssetBundleKit.AbMgr.LoadAssetBundle("Assets/StreamingAssets/assetbundles/pic","1","load_call");		 		
+   local texture = DigiSky.AssetBundleKit.ImgeMgr.loadImge("Assets/StreamingAssets/assetbundles/pic/bg/1");		
+   if texture then
+    print("load pic success!!!!!!");
+   else
+    print("load pic fail!!!!!!");
+   end 		
 end
 
 --场景切换通知

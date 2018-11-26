@@ -333,8 +333,8 @@ namespace DigiSky.AssetBundleKit
             //检查manifest
             if (m_assetBundleManifest == null
                 || AssetBundleInfoManager.IsExits()
-                || AssetBundleInfoManager.GetSingel().GetBundleInfo(itfDownloadPath) == null
-                || AssetBundleInfoManager.GetSingel().GetBundleInfo(itfDownloadPath).IsCached(strABName) == false)
+                || AssetBundleInfoManager.GetSingel().GetBundleInfo(AppConst.BundleInfoPath) == null
+                || AssetBundleInfoManager.GetSingel().GetBundleInfo(AppConst.BundleInfoPath).IsCached(strABName) == false)
             {
                 Debug.LogError("LoadAssetBundleFromCache error!");
                 yield break;
@@ -520,7 +520,7 @@ namespace DigiSky.AssetBundleKit
 		/// <param name="strAssetName">AB包名称</param>
 		/// <param name="strSpecialAssetName">一般及时其内部asset的名称，但某些特殊的不一样，目前只有Manifest文件和lua文件有特殊名字</param>
         /// <returns></returns>
-        public T LoadSingleAsset<T>(string strPath, string strAssetName = "") where T : UnityEngine.Object
+        public T LoadSingleAsset<T>(string strPath, string strAssetName = null) where T : UnityEngine.Object
         {
 			UnityEngine.Object ob = _LoadSingleAssetInternal(strPath, strAssetName);
 
@@ -543,8 +543,7 @@ namespace DigiSky.AssetBundleKit
         {
             // strPath不判断长度，允许为长度为0
             if (strPath != null
-                && assetName != null
-                && assetName.Length != 0)
+                )
             {
                 // 转为小写，包名只能是小写
                 string strABName = strPath.ToLower();
@@ -561,8 +560,8 @@ namespace DigiSky.AssetBundleKit
                 }
                 AssetBundle assetBundle = null;
                 if (AssetBundleInfoManager.IsExits() == true
-                && AssetBundleInfoManager.GetSingel().GetBundleInfo(itfDownloadPath) != null
-                && AssetBundleInfoManager.GetSingel().GetBundleInfo(itfDownloadPath).IsCached(strABName) == true)
+                && AssetBundleInfoManager.GetSingel().GetBundleInfo(AppConst.BundleInfoPath) != null
+                && AssetBundleInfoManager.GetSingel().GetBundleInfo(AppConst.BundleInfoPath).IsCached(strABName) == true)
                 {
                     // 优先从cache加载
                     string cachePath = itfDownloadPath + strABName;
@@ -706,8 +705,8 @@ namespace DigiSky.AssetBundleKit
                 _LoadDependencies(strABName);
 
                 if (AssetBundleInfoManager.IsExits() == true
-                && AssetBundleInfoManager.GetSingel().GetBundleInfo(itfDownloadPath) != null
-                && AssetBundleInfoManager.GetSingel().GetBundleInfo(itfDownloadPath).IsCached(strABName) == true)
+                && AssetBundleInfoManager.GetSingel().GetBundleInfo(AppConst.BundleInfoPath) != null
+                && AssetBundleInfoManager.GetSingel().GetBundleInfo(AppConst.BundleInfoPath).IsCached(strABName) == true)
                 {
                     _LoadAssetBundleFromCache(strABName);
                 }
@@ -728,8 +727,8 @@ namespace DigiSky.AssetBundleKit
             //检查manifest
             if (m_assetBundleManifest == null
                 || AssetBundleInfoManager.IsExits() == false
-                || AssetBundleInfoManager.GetSingel().GetBundleInfo(itfDownloadPath) == null
-                || AssetBundleInfoManager.GetSingel().GetBundleInfo(itfDownloadPath).IsCached(strABName) == false)
+                || AssetBundleInfoManager.GetSingel().GetBundleInfo(AppConst.BundleInfoPath) == null
+                || AssetBundleInfoManager.GetSingel().GetBundleInfo(AppConst.BundleInfoPath).IsCached(strABName) == false)
             {
                 Debug.LogError("LoadAssetBundleFromCache error!");
                 return;

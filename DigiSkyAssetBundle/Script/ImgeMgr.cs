@@ -6,12 +6,14 @@ using UnityEngine;
 using LuaFramework;
 namespace DigiSky.AssetBundleKit
 {
-    class ImgeMgr
+    public class ImgeMgr
     {
         public static Texture2D loadImge(string path) {
-            AssetBundleManager.GetSingel().LoadAssetAsyc(path, (UnityEngine.Object obj) => {
-                Debug.Log("AbMgr load call back !!!!!");
-            });
+            Debug.Log("ImgeMgr loadImge!!!!!");
+            Texture2D texture = AssetBundleManager.GetSingel().LoadSingleAsset<Texture2D>(path);
+            if (texture != null) {
+                return texture;
+            }
             return null;
         }
     }
