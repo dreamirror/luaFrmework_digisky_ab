@@ -46,8 +46,8 @@ namespace LuaFramework {
 
 
             //AB下载测试
-           // AssetBundleInfoManager.Initialization();
-           // AssetBundleInfoManager info = AssetBundleInfoManager.GetSingel();
+            AssetBundleInfoManager.Initialization();
+            AssetBundleInfoManager info = AssetBundleInfoManager.GetSingel();
            // AssetBundleDownloader.Initialization();
            // AssetBundleDownloader downloader = AssetBundleDownloader.GetSingel();
             // downloader.SetSourceAssetBundleURL("http://192.168.101.57/F%3A/filesserver/assetbundles");

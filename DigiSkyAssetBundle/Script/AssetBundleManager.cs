@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
-
+using LuaFramework;
 namespace DigiSky.AssetBundleKit
 {
     /// <summary>
@@ -153,7 +153,7 @@ namespace DigiSky.AssetBundleKit
         {
             // 加载并初始化Manifest包
             Debug.Log("InitManifest AssetBundles");
-            m_assetBundleManifest = LoadSingleAsset<AssetBundleManifest>("Assets/StreamingAssets/assetbundles/", "assetbundles", "AssetBundleManifest");
+            m_assetBundleManifest = LoadSingleAsset<AssetBundleManifest>("Assets/StreamingAssets/assetbundles/assetbundles", "AssetBundleManifest");
         }
 
         //
@@ -308,8 +308,8 @@ namespace DigiSky.AssetBundleKit
             }
 
             if (AssetBundleInfoManager.IsExits()
-                && AssetBundleInfoManager.GetSingel().GetBundleInfo(itfDownloadPath) != null
-                && AssetBundleInfoManager.GetSingel().GetBundleInfo(itfDownloadPath).IsCached(strABName) == true)
+                && AssetBundleInfoManager.GetSingel().GetBundleInfo(AppConst.BundleInfoPath) != null
+                && AssetBundleInfoManager.GetSingel().GetBundleInfo(AppConst.BundleInfoPath).IsCached(strABName) == true)
             {
                 Coroutine routine = StartCoroutine(_LoadAssetBundleAsycFromCache(strABName));
                 m_listCoroutine.Add(routine);
@@ -461,25 +461,25 @@ namespace DigiSky.AssetBundleKit
         }
 
         /// <summary>
-        /// 加载资源
+        /// 加载资源,
         /// </summary>
-        /// <param name="strPath"></param>
-        /// <param name="assetName"></param>
+        /// <param name="strPath"></param> 这个为ab的全路径
+        /// <param name="assetName"></param>这个为asset的名字,如果不填就是默认为最小粒度
         /// <param name="finishLoadAssetCallback"></param>
-        public T LoadAsset<T>(string strPath, string assetName) where T : UnityEngine.Object
+        public T LoadAsset<T>(string strPath, string assetName = "") where T : UnityEngine.Object
         {
             Debug.Log("path: " + strPath + assetName);
             if (strPath != null
-                && assetName != null
-                && assetName.Length != 0)
+                && assetName != null)
             {
+                _LoadAssetBundle(strPath);
+                if (assetName.Length == 0) {
+                    string[] temp = strPath.Split('/');
+                    assetName = temp[temp.Length - 1];
+                }
                 // 转为小写，包名只能是小写
-                string strABName = strPath.ToLower() + assetName.ToLower();
-
-                _LoadAssetBundle(strABName);
-
                 // 最后从包中加载出资源
-                Object ob = _LoadAssetInternal(strABName, assetName);
+                Object ob = _LoadAssetInternal(strPath, assetName);
 
                 if (ob != null)
                 {
@@ -491,7 +491,7 @@ namespace DigiSky.AssetBundleKit
         }
 
         /// <summary>
-        /// 使用一个完整的路径加载资源，最后一个/后面是asset名字,整体是包名
+        /// 使用一个完整的路径加载资源，最后一个/后面是asset名字,整体是包名，这个字适用于最小粒度
         /// </summary>
         /// <param name="strCompeletePath"></param>
         /// <returns></returns>
@@ -520,9 +520,9 @@ namespace DigiSky.AssetBundleKit
 		/// <param name="strAssetName">AB包名称</param>
 		/// <param name="strSpecialAssetName">一般及时其内部asset的名称，但某些特殊的不一样，目前只有Manifest文件和lua文件有特殊名字</param>
         /// <returns></returns>
-        public T LoadSingleAsset<T>(string strPath, string strAssetName, string strSpecialAssetName = null) where T : UnityEngine.Object
+        public T LoadSingleAsset<T>(string strPath, string strAssetName = "") where T : UnityEngine.Object
         {
-			UnityEngine.Object ob = _LoadSingleAssetInternal(strPath, strAssetName, strSpecialAssetName);
+			UnityEngine.Object ob = _LoadSingleAssetInternal(strPath, strAssetName);
 
             if (ob != null)
             {
@@ -539,7 +539,7 @@ namespace DigiSky.AssetBundleKit
         /// <param name="assetName"></param>
         /// <param name="specialAssetName"></param>
         /// <returns></returns>
-        private UnityEngine.Object _LoadSingleAssetInternal(string strPath, string assetName, string specialAssetName = null)
+        private UnityEngine.Object _LoadSingleAssetInternal(string strPath, string assetName = null)
         {
             // strPath不判断长度，允许为长度为0
             if (strPath != null
@@ -547,16 +547,18 @@ namespace DigiSky.AssetBundleKit
                 && assetName.Length != 0)
             {
                 // 转为小写，包名只能是小写
-                string strABName = strPath.ToLower() + assetName.ToLower();
+                string strABName = strPath.ToLower();
 
                 // 某些包的assetname比较特殊，比如说Manifest文件
                 string realAseetName = null;
-                if (specialAssetName == null
-                    || specialAssetName.Length == 0)
+                if (assetName != null)
+                {
                     realAseetName = assetName;
-                else
-                    realAseetName = specialAssetName;
-
+                }
+                else {
+                    int index = strPath.LastIndexOf('/');
+                    realAseetName = strPath.Substring(index + 1);
+                }
                 AssetBundle assetBundle = null;
                 if (AssetBundleInfoManager.IsExits() == true
                 && AssetBundleInfoManager.GetSingel().GetBundleInfo(itfDownloadPath) != null
@@ -578,8 +580,6 @@ namespace DigiSky.AssetBundleKit
                 {
                     // 最后从包中加载出资源
                     Object ob = assetBundle.LoadAsset(realAseetName);
-
-                    //string[] names = assetBundle.GetAllAssetNames();
 
                     // 立即卸载
                     assetBundle.Unload(false);
@@ -608,7 +608,7 @@ namespace DigiSky.AssetBundleKit
         /// <param name="strAssetName"></param>
         /// <param name="bMainAsset">主资源，包中的第一个资源</param>
         /// <returns></returns>
-        private Object _LoadAssetInternal(string strABName, string strAssetName, bool bMainAsset = false)
+        private Object _LoadAssetInternal(string strABName, string strAssetName = null, bool bMainAsset = false)
         {
             if (strABName != null
                 && strABName.Length != 0)
@@ -628,7 +628,10 @@ namespace DigiSky.AssetBundleKit
                                 return loadedBundle.assetBundle.LoadAsset(names[0]);
                             }
                         }
-
+                        if (strAssetName == null) {
+                            int index = strABName.LastIndexOf('/');
+                            strAssetName = strABName.Substring(index + 1);
+                        }
                         return loadedBundle.assetBundle.LoadAsset(strAssetName);
                     }
                     else
