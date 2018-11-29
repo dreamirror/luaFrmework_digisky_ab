@@ -155,3 +155,9 @@ function Network.load_call()
     logWarn('1111111111111111111');
     logWarn('1111111111111111111');
 end
+
+--测试加载场景
+
+function Network.load_scene_call()
+    logWarn('ssssssssssssssss');
+end

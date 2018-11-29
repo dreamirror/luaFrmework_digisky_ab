@@ -12,7 +12,9 @@ function Main()
     print("load pic success!!!!!!");
    else
     print("load pic fail!!!!!!");
-   end 		
+   end
+   
+   DigiSky.AssetBundleKit.ImgeMgr.LoadSceneAsyncCall("Assets/StreamingAssets/assetbundles/loadTest",'load_scene_call');		
 end
 
 --场景切换通知

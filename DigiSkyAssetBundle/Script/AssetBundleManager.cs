@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using LuaFramework;
+using UnityEngine.SceneManagement;
 namespace DigiSky.AssetBundleKit
 {
     /// <summary>
@@ -403,11 +404,10 @@ namespace DigiSky.AssetBundleKit
                 string assetBundleName = strSceneName.ToLower();
 
                 _LoadAssetBundle(assetBundleName);
-
-                UnityEngine.SceneManagement.SceneManager.LoadScene(strSceneName);
+                LoadAssetAsyc(assetBundleName, (UnityEngine.Object obj) => { UnityEngine.SceneManagement.SceneManager.LoadScene(strSceneName); });
             }
             else
-                UnityEngine.SceneManagement.SceneManager.LoadScene(strSceneName);
+               // UnityEngine.SceneManagement.SceneManager.LoadScene(strSceneName);
         }
 
         /// <summary>
@@ -920,6 +920,49 @@ namespace DigiSky.AssetBundleKit
                 loadedAB.assetBundle.Unload(false);
                 m_dictLoadedAssetBundles.Remove(abName);
                 Debug.Log("Unload " + abName + " success!");
+            }
+        }
+
+        /// <summary>
+        /// 异步加载场景回调lua函数
+        /// </summary>
+        /// <param name="strSceneName"></param>
+        /// <param call_back="callBack"></param>
+        public void LoadSceneAsyncCall(string sceneName, string callBack = null)
+        {
+            if (sceneName == null)
+            {
+                Debug.LogError("LoadSceneAsyncCall sceneName is null");
+                return;
+            }
+            if (callBack == null)
+            {
+                Debug.LogWarning("LoadSceneAsyncCall callBack is null");
+            }
+            // StartCoroutine(LoadYourAsyncScene(sceneName, callBack));
+            LoadScene(sceneName);
+        }
+
+        IEnumerator LoadYourAsyncScene(string sceneName,string callBack = null)
+        {
+            AsyncOperation asyncLoad;
+            if (//m_gameobject != null
+                sceneName != null)
+            {
+                string assetBundleName = sceneName.ToLower();
+
+                _LoadAssetBundle(assetBundleName);
+
+                asyncLoad  = SceneManager.LoadSceneAsync(sceneName);
+            }
+            else
+                asyncLoad  = SceneManager.LoadSceneAsync(sceneName);
+
+            // Wait until the asynchronous scene fully loads
+            while (!asyncLoad.isDone)
+            {
+                Util.CallMethod("Network", callBack);
+                yield return null;
             }
         }
     }

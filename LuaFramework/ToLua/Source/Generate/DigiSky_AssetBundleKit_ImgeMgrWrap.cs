@@ -8,6 +8,8 @@ public class DigiSky_AssetBundleKit_ImgeMgrWrap
 	{
 		L.BeginClass(typeof(DigiSky.AssetBundleKit.ImgeMgr), typeof(System.Object));
 		L.RegFunction("loadImge", loadImge);
+		L.RegFunction("LoadScene", LoadScene);
+		L.RegFunction("LoadSceneAsyncCall", LoadSceneAsyncCall);
 		L.RegFunction("New", _CreateDigiSky_AssetBundleKit_ImgeMgr);
 		L.RegFunction("__tostring", ToLua.op_ToString);
 		L.EndClass();
@@ -47,6 +49,39 @@ public class DigiSky_AssetBundleKit_ImgeMgrWrap
 			UnityEngine.Texture2D o = DigiSky.AssetBundleKit.ImgeMgr.loadImge(arg0);
 			ToLua.PushSealed(L, o);
 			return 1;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int LoadScene(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 1);
+			string arg0 = ToLua.CheckString(L, 1);
+			DigiSky.AssetBundleKit.ImgeMgr.LoadScene(arg0);
+			return 0;
+		}
+		catch (Exception e)
+		{
+			return LuaDLL.toluaL_exception(L, e);
+		}
+	}
+
+	[MonoPInvokeCallbackAttribute(typeof(LuaCSFunction))]
+	static int LoadSceneAsyncCall(IntPtr L)
+	{
+		try
+		{
+			ToLua.CheckArgsCount(L, 2);
+			string arg0 = ToLua.CheckString(L, 1);
+			string arg1 = ToLua.CheckString(L, 2);
+			DigiSky.AssetBundleKit.ImgeMgr.LoadSceneAsyncCall(arg0, arg1);
+			return 0;
 		}
 		catch (Exception e)
 		{
